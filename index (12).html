@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visitor Account Dashboard · SPH</title>
+<style>
+  :root{
+    --ink:#0e2b2c;
+    --ink-soft:#5c7c7d;
+    --line:#dbe8e6;
+    --paper:#eaf2f1;
+    --card:#ffffff;
+    --accent:#1f7a72;
+    --accent-2:#2fa79a;
+    --slate:#3d5a6c;
+    --steel:#7fa8bf;
+    --green:#1f7a72; --green-soft:#e0f2ee;
+    --amber:#a8781f; --amber-soft:#f7ecd9;
+    --red:#b6483f; --red-soft:#f7e6e4;
+    --gray-soft:#eef4f3;
+    font-family: -apple-system, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; color:var(--ink); padding:30px;
+    background:
+      radial-gradient(1100px 500px at 8% -10%, #d7ecec 0%, transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, #dbe9f2 0%, transparent 55%),
+      var(--paper);
+    min-height:100vh;
+  }
+  .wrap{max-width:1280px; margin:0 auto;}
+
+  .heading{display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:20px; flex-wrap:wrap; gap:14px;}
+  .heading h1{
+    margin:0; font-size:26px; font-weight:800; letter-spacing:-.01em; padding-left:14px;
+    border-left:5px solid #0a1f4d; border-radius:2px;
+    background:linear-gradient(90deg,#061539,#0f2a66 45%,#1e4fb0 80%,#3a6bd6);
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:#0f2a66;
+  }
+  .heading p{margin:4px 0 0 14px; font-size:13px; color:var(--ink-soft);}
+
+  .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px;}
+  .stat{
+    border-radius:16px; padding:16px 18px;
+    box-shadow:0 8px 20px rgba(14,43,44,.10);
+    display:flex; align-items:center; gap:12px;
+    color:#fff; position:relative; overflow:hidden;
+  }
+  .stat::after{content:""; position:absolute; right:-18px; top:-18px; width:80px; height:80px; border-radius:50%; background:rgba(255,255,255,.08);}
+  .stat.total{background:linear-gradient(135deg, var(--slate), #29424f);}
+  .stat.avail{background:linear-gradient(135deg, var(--accent-2), var(--accent));}
+  .stat.use{background:linear-gradient(135deg, #c98f2e, var(--amber));}
+  .stat .ic{
+    width:38px; height:38px; border-radius:11px; display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; background:rgba(255,255,255,.22); color:#fff; position:relative; z-index:1;
+  }
+  .stat .n{font-size:20px; font-weight:800; line-height:1.1; position:relative; z-index:1;}
+  .stat .l{font-size:11.5px; color:rgba(255,255,255,.85); font-weight:600; position:relative; z-index:1;}
+
+  .toolbar{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:14px;}
+  .search{position:relative; flex:1; min-width:220px; max-width:340px;}
+  .search input{
+    width:100%; padding:10px 14px 10px 36px; border-radius:999px; border:1px solid var(--line);
+    background:var(--card); font-size:14px; outline:none; box-shadow:0 1px 2px rgba(14,43,44,.03);
+  }
+  .search input:focus{border-color:var(--accent); box-shadow:0 0 0 3px rgba(31,122,114,.14);}
+  .search svg{position:absolute; left:13px; top:50%; transform:translateY(-50%); opacity:.4;}
+
+  .dd{
+    display:flex; align-items:center; gap:6px; padding:9px 14px; border-radius:999px;
+    border:1px solid var(--line); background:var(--card); font-size:13.5px; color:var(--ink);
+    cursor:pointer; font-weight:600; position:relative; box-shadow:0 1px 2px rgba(14,43,44,.03);
+  }
+  .dd svg{opacity:.55;}
+  .dd-menu{
+    position:absolute; top:calc(100% + 6px); left:0; background:var(--card); border:1px solid var(--line);
+    border-radius:12px; box-shadow:0 16px 32px rgba(14,43,44,.14); min-width:150px; padding:6px;
+    display:none; z-index:20;
+  }
+  .dd-menu.open{display:block;}
+  .dd-menu button{width:100%; text-align:left; padding:8px 10px; border:none; background:none; border-radius:8px; font-size:13.5px; cursor:pointer; color:var(--ink);}
+  .dd-menu button:hover{background:var(--gray-soft);}
+  .dd-menu button.sel{color:var(--accent); font-weight:700;}
+
+  .spacer{flex:1;}
+  .btn-outline, .btn-solid{
+    display:flex; align-items:center; gap:7px; padding:9px 16px; border-radius:999px;
+    font-size:13.5px; font-weight:700; cursor:pointer; border:1px solid var(--line);
+  }
+  .btn-outline{background:var(--card); color:var(--ink); box-shadow:0 1px 2px rgba(14,43,44,.03);}
+  .btn-outline:hover{border-color:var(--accent); color:var(--accent);}
+  .btn-solid{background:linear-gradient(135deg,var(--accent),var(--accent-2)); border-color:transparent; color:#fff; box-shadow:0 6px 16px rgba(31,122,114,.30);}
+  .btn-solid:hover{opacity:.94;}
+
+  .card{background:var(--card); border:1px solid var(--line); border-radius:18px; overflow:hidden; box-shadow:0 1px 2px rgba(14,43,44,.04), 0 12px 28px rgba(14,43,44,.05);}
+  table{width:100%; border-collapse:collapse; font-size:13.5px;}
+  thead th{
+    text-align:left; padding:13px 14px; font-size:11.5px; color:#dbe6ff; text-transform:uppercase; letter-spacing:.04em;
+    font-weight:700; white-space:nowrap; background:linear-gradient(90deg,#0f2a66,#1e4fb0);
+  }
+  thead th.chk{width:38px;}
+  tbody td{padding:12px 14px; border-bottom:1px solid var(--line); vertical-align:middle;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:nth-child(even){background:#f4f8ff;}
+  tbody tr:hover{background:#e7eefc;}
+  tbody tr.row-inuse td:first-child{box-shadow:inset 3px 0 0 var(--amber);}
+  tbody tr.row-available td:first-child{box-shadow:inset 3px 0 0 var(--accent-2);}
+  input[type=checkbox]{width:16px; height:16px; accent-color:var(--accent); cursor:pointer;}
+
+  .person{display:flex; align-items:center; gap:10px;}
+  .avatar{width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-size:12.5px; font-weight:700; flex-shrink:0;}
+  .avatar.unassigned{background:var(--gray-soft); color:var(--ink-soft);}
+  .name{font-weight:700; color:var(--slate);}
+  .sub{font-size:12px; color:var(--ink-soft);}
+
+  .mono{font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size:12.5px;}
+  .id-pill{background:var(--green-soft); color:var(--accent); padding:3px 8px; border-radius:7px; font-size:12px; font-weight:700; border:1px solid #c8e6e1;}
+
+  .pill{display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:999px; font-size:12px; font-weight:700; border:1px solid transparent;}
+  .pill::before{content:""; width:6px; height:6px; border-radius:50%; background:currentColor;}
+  .pill.available{background:var(--green-soft); color:var(--accent); border-color:#bfe4dd;}
+  .pill.inuse{background:var(--amber-soft); color:var(--amber); border-color:#eed7ab;}
+
+  .days{font-weight:700;}
+  .days.warn{color:var(--red);}
+  .days.ok{color:var(--ink-soft); font-weight:600;}
+
+  .actions{display:flex; gap:14px;}
+  .actions button{background:none; border:none; cursor:pointer; color:var(--ink-soft); padding:2px;}
+  .actions button:hover{color:var(--accent);}
+  .actions button.danger:hover{color:var(--red);}
+
+  .empty{padding:44px; text-align:center; color:var(--ink-soft); font-size:13.5px;}
+
+  .pagination{display:flex; align-items:center; justify-content:space-between; padding:12px 16px; font-size:13px; color:var(--ink-soft); border-top:1px solid var(--line); background:#f4f8ff;}
+  .page-btns{display:flex; align-items:center; gap:4px;}
+  .page-btns button{width:26px; height:26px; border-radius:8px; border:1px solid var(--line); background:var(--card); cursor:pointer; font-size:12.5px; color:var(--ink);}
+  .page-btns button.active{background:#1e4fb0; border-color:#1e4fb0; color:#fff;}
+  .page-btns button:disabled{opacity:.4; cursor:default;}
+
+  /* Modal */
+  .overlay{position:fixed; inset:0; background:rgba(10,30,31,.5); display:none; align-items:center; justify-content:center; padding:20px; z-index:50; backdrop-filter:blur(2px);}
+  .overlay.open{display:flex;}
+  .modal{background:var(--card); border-radius:18px; width:100%; max-width:460px; padding:26px; box-shadow:0 30px 70px rgba(10,30,31,.28);}
+  .modal h2{margin:0 0 4px; font-size:17px; font-weight:800;}
+  .modal .hint{color:var(--ink-soft); font-size:12.5px; margin-bottom:18px;}
+  .field{margin-bottom:13px;}
+  .field label{display:block; font-size:11.5px; font-weight:700; color:var(--ink-soft); margin-bottom:5px; text-transform:uppercase; letter-spacing:.04em;}
+  .field input, .field select{width:100%; padding:9px 11px; border:1px solid var(--line); border-radius:9px; font-size:14px; outline:none; font-family:inherit;}
+  .field input:focus, .field select:focus{border-color:var(--accent); box-shadow:0 0 0 3px rgba(31,122,114,.14);}
+  .field input:disabled{background:var(--gray-soft); color:#9aa0a8;}
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .modal-actions{display:flex; gap:8px; margin-top:18px;}
+  .mbtn{flex:1; padding:10px; border-radius:10px; border:1px solid var(--line); background:var(--card); font-weight:700; font-size:13.5px; cursor:pointer;}
+  .mbtn.primary{background:linear-gradient(135deg,var(--accent),var(--accent-2)); border-color:transparent; color:#fff;}
+
+  .footnote{margin-top:14px; font-size:12px; color:var(--ink-soft); text-align:center;}
+  .footnote code{background:var(--gray-soft); padding:1px 5px; border-radius:6px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="heading">
+    <div>
+      <h1>Visitor Account Dashboard</h1>
+      <p>Track which shared login is assigned, to whom, and for how long.</p>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat total">
+      <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18"/></svg></div>
+      <div><div class="n" id="statTotal">0</div><div class="l">Total accounts</div></div>
+    </div>
+    <div class="stat avail">
+      <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></div>
+      <div><div class="n" id="statAvail">0</div><div class="l">Available</div></div>
+    </div>
+    <div class="stat use">
+      <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+      <div><div class="n" id="statUse">0</div><div class="l">In use</div></div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="search">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="searchInput" placeholder="Search">
+    </div>
+
+    <div class="dd" id="statusDd">
+      <span>Status</span>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      <div class="dd-menu" id="statusMenu">
+        <button data-v="all" class="sel">All</button>
+        <button data-v="Available">Available</button>
+        <button data-v="In Use">In Use</button>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+    <button class="btn-outline" id="exportBtn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Export
+    </button>
+    <button class="btn-solid" id="addBtn">+ Add account</button>
+  </div>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th class="chk"><input type="checkbox" id="checkAll"></th>
+          <th>ID</th>
+          <th>Login email</th>
+          <th>Password</th>
+          <th>Status</th>
+          <th>Assigned to</th>
+          <th>Assigned by</th>
+          <th>Assigned on</th>
+          <th>Days in use</th>
+          <th>Company</th>
+          <th>Phone</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div class="empty" id="emptyState" style="display:none;">No accounts match your search.</div>
+    <div class="pagination">
+      <div class="left"><span id="rangeLabel">1–2</span>&nbsp;of&nbsp;<span id="totalLabel">2</span>&nbsp;rows</div>
+      <div class="page-btns"><button disabled>‹</button><button class="active">1</button><button disabled>›</button></div>
+    </div>
+  </div>
+
+  <p class="footnote">Reads/writes an in-page data set out of the box. To connect live Clappia data, fill in <code>CLAPPIA_CONFIG</code> in the script below.</p>
+</div>
+
+<!-- Modal -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h2 id="modalTitle">Edit account</h2>
+    <p class="hint" id="modalHint">Update details for this shared login account.</p>
+
+    <div class="field"><label>ID</label><input id="f_id" disabled></div>
+    <div class="row2">
+      <div class="field"><label>Login email</label><input id="f_email"></div>
+      <div class="field"><label>Password</label><input id="f_password"></div>
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label>Account status</label>
+        <select id="f_status"><option>Available</option><option>In Use</option></select>
+      </div>
+      <div class="field"><label>Assigned on</label><input type="date" id="f_date"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Assigned visitor name</label><input id="f_name" placeholder="e.g. Sarah Tan"></div>
+      <div class="field"><label>Company</label><input id="f_company" placeholder="e.g. Acme Supplies"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Visitor email</label><input id="f_visitorEmail" placeholder="visitor's own email"></div>
+      <div class="field"><label>Phone number</label><input id="f_phone" placeholder="e.g. +62 812..."></div>
+    </div>
+    <div class="field">
+      <label>Assigned by</label>
+      <select id="f_assignedBy"><option value="">— Select admin —</option></select>
+    </div>
+
+    <div class="modal-actions">
+      <button class="mbtn" id="cancelBtn">Cancel</button>
+      <button class="mbtn primary" id="saveBtn">Save changes</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================================================================
+   CLAPPIA LIVE-DATA CONFIG. Requests go through a Cloudflare Worker proxy
+   (see worker.js) instead of calling api-public-v3.clappia.com directly,
+   because Clappia's API doesn't send CORS headers, so direct browser
+   calls from a github.io page get blocked. The proxy also keeps the
+   real Clappia API key out of this file / out of your public repo.
+   Set baseUrl below to YOUR deployed Worker's URL.
+   Verify the exact request/response shape against developer.clappia.com
+   for your account before relying on it.
+   ========================================================================= */
+const CLAPPIA_CONFIG = {
+  enabled: true,
+  baseUrl: "https://clappiaproxy.kyawzintheinofficial.workers.dev", // Cloudflare Worker proxy — see worker.js
+  appId: "ZXF196430", // Visitor Accounts app
+  workplaceId: "", // REQUIRED for creating NEW accounts — find it in Workplace Settings, fill this in before testing "Add account"
+  requestingUserEmail: "ictadmin@sph.ac.id",
+  fieldMap: {
+    // NOTE: loginEmail/loginPassword are NOT in the Clappia app — the admin
+    // types those in manually on this dashboard, they never sync to Clappia.
+    id: "id", status: "accountStatus",
+    name: "assignedVisitorName", company: "visitorCompany", visitorEmail: "visitorEmail",
+    phone: "visitorPhone", date: "assignedDate",
+    assignedByName: "assignedByName", assignedByEmail: "assignedByEmail", assignedByDept: "assignedByDepartment"
+  }
+};
+// Strip any trailing slash so ".../workers.dev/" + "/submissions/get" can't become a double-slash URL
+CLAPPIA_CONFIG.baseUrl = CLAPPIA_CONFIG.baseUrl.replace(/\/+$/, "");
+
+/* =========================================================================
+   ADMIN DIRECTORY ("Assigned by" picker). Manually maintained list — add a
+   line here for each admin/staff member who can be picked in that dropdown.
+   No live Clappia fetch: this list is typed directly in the code.
+   ========================================================================= */
+let ADMIN_DIRECTORY = [
+  { name: "cliff", email: "internshipprp-lv2@sph.ac.id", department: "Admission", type: "Staff" },
+  { name: "ICT Admin", email: "ictadmin@sph.ac.id", department: "ICT", type: "Staff" }
+  // add more admins here, same shape: { name, email, department, type }
+];
+
+async function fetchLiveRecords() {
+  const res = await fetch(`${CLAPPIA_CONFIG.baseUrl}/submissions/get`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ appId: CLAPPIA_CONFIG.appId, requestingUserEmailAddress: CLAPPIA_CONFIG.requestingUserEmail, pageSize: 200 })
+  });
+  if (!res.ok) throw new Error("Failed to fetch submissions: " + res.status);
+  const json = await res.json();
+  const map = CLAPPIA_CONFIG.fieldMap;
+  // Maps the raw Clappia submission list into the record shape the dashboard renders.
+  // NOTE: verify data.submissions[i].submissionId and .data keys against your real
+  // Clappia response shape (console.log(json) once if rows look wrong) and adjust below.
+  return (json.submissions || []).map(s => ({
+    id: s.data?.[map.id] ?? s.submissionId ?? "",
+    submissionId: s.submissionId,
+    status: s.data?.[map.status] || "Available",
+    name: s.data?.[map.name] || "",
+    company: s.data?.[map.company] || "",
+    visitorEmail: s.data?.[map.visitorEmail] || "",
+    phone: s.data?.[map.phone] || "",
+    date: s.data?.[map.date] || "",
+    assignedByName: s.data?.[map.assignedByName] || "",
+    assignedByEmail: s.data?.[map.assignedByEmail] || "",
+    assignedByDept: s.data?.[map.assignedByDept] || ""
+    // email/password intentionally absent — those are admin-entered, local only
+  }));
+}
+function recordToClappiaData(record) {
+  const map = CLAPPIA_CONFIG.fieldMap;
+  return {
+    // loginEmail/loginPassword intentionally omitted — admin-entered, local only
+    [map.status]: record.status,
+    [map.name]: record.name,
+    [map.company]: record.company,
+    [map.visitorEmail]: record.visitorEmail,
+    [map.phone]: record.phone,
+    [map.date]: record.date,
+    [map.assignedByName]: record.assignedByName,
+    [map.assignedByEmail]: record.assignedByEmail,
+    [map.assignedByDept]: record.assignedByDept
+  };
+}
+
+// Updates an EXISTING Clappia submission. record.submissionId must be set
+// (it's attached automatically to any record loaded from fetchLiveRecords()).
+async function saveLiveRecord(record) {
+  if (!record.submissionId) throw new Error("Missing submissionId — can't edit a record that wasn't loaded from Clappia. Use createLiveRecord() for new accounts instead.");
+  const res = await fetch(`${CLAPPIA_CONFIG.baseUrl}/submissions/edit`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      appId: CLAPPIA_CONFIG.appId,
+      requestingUserEmailAddress: CLAPPIA_CONFIG.requestingUserEmail,
+      submissionId: record.submissionId,
+      data: recordToClappiaData(record)
+    })
+  });
+  if (!res.ok) throw new Error("Failed to save submission: " + res.status);
+  return res.json();
+}
+
+// Creates a NEW Clappia submission for a brand-new account added on the dashboard.
+// Returns the new submissionId so it can be attached to the local record.
+async function createLiveRecord(record) {
+  if (!CLAPPIA_CONFIG.workplaceId) throw new Error("CLAPPIA_CONFIG.workplaceId is empty — fill it in (Workplace Settings) before adding new accounts live.");
+  const res = await fetch(`${CLAPPIA_CONFIG.baseUrl}/submissions/create`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      appId: CLAPPIA_CONFIG.appId,
+      workplaceId: CLAPPIA_CONFIG.workplaceId,
+      requestingUserEmailAddress: CLAPPIA_CONFIG.requestingUserEmail,
+      data: recordToClappiaData(record)
+    })
+  });
+  if (!res.ok) throw new Error("Failed to create submission: " + res.status);
+  return res.json(); // TODO: verify the exact key holding the new submission id (e.g. submissionId) against your account's real response
+}
+
+/* ========================= Sample / working data ========================= */
+function daysAgoISO(n){ const d = new Date(); d.setDate(d.getDate()-n); return d.toISOString().slice(0,10); }
+
+let records = [
+  { id: "001", email: "sstaung234@gmail.com", password: "Staff2026", status: "Available", name: "", company: "", visitorEmail: "", phone: "", date: "", assignedByName: "", assignedByEmail: "", assignedByDept: "" },
+  { id: "002", email: "lv002@gmail.com", password: "Staff2026", status: "In Use", name: "Daniel Warren", company: "PT Sinar Abadi", visitorEmail: "dwarren@sinarabadi.co.id", phone: "+62 812-3456-7890", date: daysAgoISO(6), assignedByName: "ICT Admin", assignedByEmail: "ictadmin@sph.ac.id", assignedByDept: "ICT" }
+];
+
+const AVATAR_COLORS = ["#3d5a6c","#7fa8bf","#2fa79a","#3a8f8a","#1a3d3d","#0f2427"];
+function colorFor(str){ let h=0; for(const c of str) h=(h*31+c.charCodeAt(0))>>>0; return AVATAR_COLORS[h % AVATAR_COLORS.length]; }
+function initials(name){ return name.split(" ").filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join(""); }
+function fmtDate(iso){ if(!iso) return "—"; const d = new Date(iso+"T00:00:00"); return d.toLocaleDateString(undefined,{month:"short", day:"numeric", year:"numeric"}); }
+function daysInUse(iso){ if(!iso) return null; const start = new Date(iso+"T00:00:00"); const today = new Date(); today.setHours(0,0,0,0); return Math.max(0, Math.round((today-start)/86400000)); }
+
+let statusFilter = "all";
+let searchTerm = "";
+
+const tbody = document.getElementById("tbody");
+const emptyState = document.getElementById("emptyState");
+
+function render() {
+  const term = searchTerm.trim().toLowerCase();
+  const filtered = records.filter(r => {
+    const matchesStatus = statusFilter === "all" || r.status === statusFilter;
+    const haystack = `${r.id} ${r.email} ${r.name} ${r.company}`.toLowerCase();
+    return matchesStatus && haystack.includes(term);
+  });
+
+  tbody.innerHTML = "";
+  emptyState.style.display = filtered.length ? "none" : "block";
+
+  filtered.forEach(r => {
+    const tr = document.createElement("tr");
+    const statusClass = r.status === "Available" ? "available" : "inuse";
+    tr.className = statusClass === "available" ? "row-available" : "row-inuse";
+    const avatar = r.name
+      ? `<div class="avatar" style="background:${colorFor(r.name)}">${initials(r.name)}</div>`
+      : `<div class="avatar unassigned">–</div>`;
+    const inUse = r.status === "In Use";
+    const dCount = inUse ? daysInUse(r.date) : null;
+    const daysCell = inUse
+      ? (dCount === null ? "—" : `<span class="days ${dCount >= 5 ? "warn" : "ok"}">${dCount} day${dCount===1?"":"s"}</span>`)
+      : `<span class="sub">—</span>`;
+    tr.innerHTML = `
+      <td><input type="checkbox"></td>
+      <td><span class="id-pill mono">${r.id}</span></td>
+      <td>${r.email}</td>
+      <td><span class="mono">${r.password}</span></td>
+      <td><span class="pill ${statusClass}">${r.status}</span></td>
+      <td>
+        <div class="person">
+          ${avatar}
+          <div>
+            <div class="name">${r.name || "Unassigned"}</div>
+            ${r.visitorEmail ? `<div class="sub">${r.visitorEmail}</div>` : ""}
+          </div>
+        </div>
+      </td>
+      <td>
+        ${r.assignedByName
+          ? `<div class="name">${r.assignedByName}</div><div class="sub">${r.assignedByEmail}${r.assignedByDept ? " · " + r.assignedByDept : ""}</div>`
+          : `<span class="sub">—</span>`}
+      </td>
+      <td>${fmtDate(r.date)}</td>
+      <td>${daysCell}</td>
+      <td>${r.company || "—"}</td>
+      <td>${r.phone || "—"}</td>
+      <td>
+        <div class="actions">
+          <button data-edit="${r.id}" title="Edit">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+          </button>
+          <button class="danger" data-delete="${r.id}" title="Delete">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+          </button>
+        </div>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById("rangeLabel").textContent = filtered.length ? `1–${filtered.length}` : "0";
+  document.getElementById("totalLabel").textContent = records.length;
+  document.getElementById("statTotal").textContent = records.length;
+  document.getElementById("statAvail").textContent = records.filter(r => r.status === "Available").length;
+  const inUseRecs = records.filter(r => r.status === "In Use");
+  document.getElementById("statUse").textContent = inUseRecs.length;
+}
+
+/* Search */
+document.getElementById("searchInput").addEventListener("input", e => { searchTerm = e.target.value; render(); });
+
+/* Dropdown filters */
+function setupDropdown(ddId, menuId, onPick){
+  const dd = document.getElementById(ddId), menu = document.getElementById(menuId);
+  dd.addEventListener("click", e => {
+    document.querySelectorAll(".dd-menu").forEach(m => { if (m !== menu) m.classList.remove("open"); });
+    menu.classList.toggle("open");
+    e.stopPropagation();
+  });
+  menu.querySelectorAll("button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      menu.querySelectorAll("button").forEach(b => b.classList.remove("sel"));
+      btn.classList.add("sel");
+      onPick(btn.dataset.v);
+      menu.classList.remove("open");
+    });
+  });
+}
+setupDropdown("statusDd","statusMenu", v => { statusFilter = v; render(); });
+document.addEventListener("click", () => document.querySelectorAll(".dd-menu").forEach(m => m.classList.remove("open")));
+
+/* Select-all checkbox (visual only) */
+document.getElementById("checkAll").addEventListener("change", e => {
+  tbody.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = e.target.checked);
+});
+
+/* Export */
+document.getElementById("exportBtn").addEventListener("click", () => {
+  const header = "ID,Login Email,Password,Status,Assigned To,Assigned By,Assigned By Email,Assigned By Department,Assigned On,Days In Use,Company,Phone";
+  const rows = records.map(r => {
+    const d = r.status === "In Use" ? daysInUse(r.date) : "";
+    return [r.id, r.email, r.password, r.status, r.name, r.assignedByName, r.assignedByEmail, r.assignedByDept, r.date, d, r.company, r.phone].join(",");
+  });
+  const csv = [header, ...rows].join("\n");
+  const blob = new Blob([csv], { type: "text/csv" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "email-pool.csv";
+  a.click();
+});
+
+/* Modal handling */
+const overlay = document.getElementById("overlay");
+const assignedByEl = document.getElementById("f_assignedBy");
+let editingId = null;
+
+function populateAdminDropdown(list) {
+  assignedByEl.innerHTML = '<option value="">— Select admin —</option>' +
+    list.map(a => `<option value="${a.name}" data-email="${a.email}" data-dept="${a.department}">${a.name} — ${a.department}</option>`).join("");
+}
+
+function openModal(record) {
+  editingId = record ? record.id : null;
+  document.getElementById("modalTitle").textContent = record ? "Edit account" : "New account";
+  document.getElementById("modalHint").textContent = record ? "Update details for this shared login account." : "Add a new pre-registered login to the pool.";
+  document.getElementById("f_id").value = record ? record.id : String(records.length + 1).padStart(3, "0");
+  document.getElementById("f_email").value = record ? record.email : "";
+  document.getElementById("f_password").value = record ? record.password : "";
+  document.getElementById("f_status").value = record ? record.status : "Available";
+  document.getElementById("f_name").value = record ? record.name : "";
+  document.getElementById("f_company").value = record ? record.company : "";
+  document.getElementById("f_visitorEmail").value = record ? record.visitorEmail : "";
+  document.getElementById("f_phone").value = record ? record.phone : "";
+  document.getElementById("f_date").value = record ? record.date : "";
+  assignedByEl.value = record ? (record.assignedByName || "") : "";
+  overlay.classList.add("open");
+}
+function closeModal(){ overlay.classList.remove("open"); }
+
+document.getElementById("addBtn").addEventListener("click", () => openModal(null));
+document.getElementById("cancelBtn").addEventListener("click", closeModal);
+overlay.addEventListener("click", e => { if (e.target === overlay) closeModal(); });
+
+tbody.addEventListener("click", e => {
+  const editId = e.target.closest("[data-edit]")?.dataset.edit;
+  const delId = e.target.closest("[data-delete]")?.dataset.delete;
+  if (editId) openModal(records.find(r => r.id === editId));
+  if (delId && confirm(`Remove account ${delId}?`)) {
+    records = records.filter(r => r.id !== delId);
+    render();
+  }
+});
+
+document.getElementById("f_status").addEventListener("change", (e) => {
+  const dateField = document.getElementById("f_date");
+  if (e.target.value === "In Use" && !dateField.value) {
+    dateField.value = new Date().toISOString().slice(0,10);
+  }
+});
+
+document.getElementById("saveBtn").addEventListener("click", async () => {
+  const adminOpt = assignedByEl.selectedOptions[0];
+  const existing = editingId ? records.find(r => r.id === editingId) : null;
+  const updated = {
+    id: document.getElementById("f_id").value,
+    submissionId: existing?.submissionId, // carried over so edits target the right Clappia submission
+    email: document.getElementById("f_email").value,
+    password: document.getElementById("f_password").value,
+    status: document.getElementById("f_status").value,
+    name: document.getElementById("f_name").value,
+    company: document.getElementById("f_company").value,
+    visitorEmail: document.getElementById("f_visitorEmail").value,
+    phone: document.getElementById("f_phone").value,
+    date: document.getElementById("f_date").value,
+    assignedByName: assignedByEl.value || "",
+    assignedByEmail: assignedByEl.value ? (adminOpt?.dataset.email || "") : "",
+    assignedByDept: assignedByEl.value ? (adminOpt?.dataset.dept || "") : ""
+  };
+
+  if (CLAPPIA_CONFIG.enabled) {
+    try {
+      if (editingId) {
+        await saveLiveRecord(updated);
+      } else {
+        const created = await createLiveRecord(updated);
+        updated.submissionId = created.submissionId || created.data?.submissionId || updated.submissionId;
+      }
+    } catch (err) {
+      alert("Saved locally, but the live Clappia update failed: " + err.message);
+    }
+  }
+
+  records = editingId ? records.map(r => (r.id === editingId ? updated : r)) : [...records, updated];
+  closeModal();
+  render();
+});
+
+function mergeWithLocalCredentials(liveRecords) {
+  // Clappia has no loginEmail/loginPassword fields, so preserve whatever
+  // is already known locally for each id instead of blanking it out.
+  const localById = Object.fromEntries(records.map(r => [r.id, r]));
+  return liveRecords.map(r => ({
+    ...r,
+    email: localById[r.id]?.email || r.email || "",
+    password: localById[r.id]?.password || r.password || ""
+  }));
+}
+
+(async function init(){
+  populateAdminDropdown(ADMIN_DIRECTORY);
+
+  if (CLAPPIA_CONFIG.enabled) {
+    try { records = mergeWithLocalCredentials(await fetchLiveRecords()); }
+    catch (err) { console.error(err); alert("Could not load live data, showing sample data instead: " + err.message); }
+  }
+  render();
+})();
+</script>
+
+</body>
+</html>
