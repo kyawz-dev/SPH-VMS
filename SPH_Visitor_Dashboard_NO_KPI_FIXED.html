@@ -1,0 +1,3761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visitor Account Dashboard · SPH</title>
+
+<style>
+
+:root{
+  --ink:#0e2b2c;
+  --ink-soft:#5c7c7d;
+  --line:#dbe8e6;
+  --paper:#eaf2f1;
+  --card:#ffffff;
+  --accent:#1f7a72;
+  --accent-2:#2fa79a;
+  --slate:#3d5a6c;
+  --steel:#7fa8bf;
+  --green:#1f7a72;
+  --green-soft:#e0f2ee;
+  --amber:#a8781f;
+  --amber-soft:#f7ecd9;
+  --red:#b6483f;
+  --red-soft:#f7e6e4;
+  --gray-soft:#eef4f3;
+
+  font-family:
+    -apple-system,
+    "Segoe UI",
+    Inter,
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  color:var(--ink);
+  padding:30px;
+
+  background:
+    radial-gradient(
+      1100px 500px at 8% -10%,
+      #d7ecec 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 500px at 100% 0%,
+      #dbe9f2 0%,
+      transparent 55%
+    ),
+    var(--paper);
+
+  min-height:100vh;
+}
+
+.wrap{
+  max-width:1280px;
+  width:100%;
+  margin:0 auto;
+
+  /* Responsive to the actual Clappia iframe/container width. */
+  container-type:inline-size;
+  container-name:dashboard;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.heading{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  margin-bottom:20px;
+  flex-wrap:wrap;
+  gap:14px;
+}
+
+.heading h1{
+  margin:0;
+  font-size:26px;
+  font-weight:800;
+  letter-spacing:-.01em;
+  padding-left:14px;
+
+  border-left:5px solid #0a1f4d;
+  border-radius:2px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #061539,
+      #0f2a66 45%,
+      #1e4fb0 80%,
+      #3a6bd6
+    );
+
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  color:#0f2a66;
+}
+
+.heading p{
+  margin:4px 0 0 14px;
+  font-size:13px;
+  color:var(--ink-soft);
+}
+
+
+/* =========================================================
+   STAT CARDS
+   ========================================================= */
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-bottom:18px;
+}
+
+.stat{
+  border-radius:16px;
+  padding:16px 18px;
+
+  box-shadow:
+    0 8px 20px rgba(14,43,44,.10);
+
+  display:flex;
+  align-items:center;
+  gap:12px;
+
+  color:#fff;
+  position:relative;
+  overflow:hidden;
+}
+
+.stat::after{
+  content:"";
+  position:absolute;
+  right:-18px;
+  top:-18px;
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  background:rgba(255,255,255,.08);
+}
+
+.stat.total{
+  background:
+    linear-gradient(
+      135deg,
+      var(--slate),
+      #29424f
+    );
+}
+
+.stat.avail{
+  background:
+    linear-gradient(
+      135deg,
+      var(--accent-2),
+      var(--accent)
+    );
+}
+
+.stat.use{
+  background:
+    linear-gradient(
+      135deg,
+      #c98f2e,
+      var(--amber)
+    );
+}
+
+.stat .ic{
+  width:38px;
+  height:38px;
+  border-radius:11px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  flex-shrink:0;
+
+  background:rgba(255,255,255,.22);
+  color:#fff;
+
+  position:relative;
+  z-index:1;
+}
+
+.stat .n{
+  font-size:20px;
+  font-weight:800;
+  line-height:1.1;
+
+  position:relative;
+  z-index:1;
+}
+
+.stat .l{
+  font-size:11.5px;
+  color:rgba(255,255,255,.85);
+  font-weight:600;
+
+  position:relative;
+  z-index:1;
+}
+
+
+/* =========================================================
+   TOOLBAR
+   ========================================================= */
+
+.toolbar{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:14px;
+}
+
+.search{
+  position:relative;
+  flex:1;
+  min-width:220px;
+  max-width:340px;
+}
+
+.search input{
+  width:100%;
+  padding:10px 14px 10px 36px;
+
+  border-radius:999px;
+  border:1px solid var(--line);
+
+  background:var(--card);
+
+  font-size:14px;
+  outline:none;
+
+  box-shadow:
+    0 1px 2px rgba(14,43,44,.03);
+}
+
+.search input:focus{
+  border-color:var(--accent);
+
+  box-shadow:
+    0 0 0 3px rgba(31,122,114,.14);
+}
+
+.search svg{
+  position:absolute;
+  left:13px;
+  top:50%;
+  transform:translateY(-50%);
+  opacity:.4;
+}
+
+.dd{
+  display:flex;
+  align-items:center;
+  gap:6px;
+
+  padding:9px 14px;
+
+  border-radius:999px;
+  border:1px solid var(--line);
+
+  background:var(--card);
+
+  font-size:13.5px;
+  color:var(--ink);
+
+  cursor:pointer;
+  font-weight:600;
+
+  position:relative;
+
+  box-shadow:
+    0 1px 2px rgba(14,43,44,.03);
+}
+
+.dd svg{
+  opacity:.55;
+}
+
+.dd-menu{
+  position:absolute;
+
+  top:calc(100% + 6px);
+  left:0;
+
+  background:var(--card);
+  border:1px solid var(--line);
+
+  border-radius:12px;
+
+  box-shadow:
+    0 16px 32px rgba(14,43,44,.14);
+
+  min-width:150px;
+
+  padding:6px;
+
+  display:none;
+  z-index:20;
+}
+
+.dd-menu.open{
+  display:block;
+}
+
+.dd-menu button{
+  width:100%;
+  text-align:left;
+
+  padding:8px 10px;
+
+  border:none;
+  background:none;
+
+  border-radius:8px;
+
+  font-size:13.5px;
+
+  cursor:pointer;
+  color:var(--ink);
+}
+
+.dd-menu button:hover{
+  background:var(--gray-soft);
+}
+
+.dd-menu button.sel{
+  color:var(--accent);
+  font-weight:700;
+}
+
+.spacer{
+  flex:1;
+}
+
+.btn-outline,
+.btn-solid{
+  display:flex;
+  align-items:center;
+  gap:7px;
+
+  padding:9px 16px;
+
+  border-radius:999px;
+
+  font-size:13.5px;
+  font-weight:700;
+
+  cursor:pointer;
+
+  border:1px solid var(--line);
+}
+
+.btn-outline{
+  background:var(--card);
+  color:var(--ink);
+
+  box-shadow:
+    0 1px 2px rgba(14,43,44,.03);
+}
+
+.btn-outline:hover{
+  border-color:var(--accent);
+  color:var(--accent);
+}
+
+.btn-solid{
+  background:
+    linear-gradient(
+      135deg,
+      var(--accent),
+      var(--accent-2)
+    );
+
+  border-color:transparent;
+  color:#fff;
+
+  box-shadow:
+    0 6px 16px rgba(31,122,114,.30);
+}
+
+.btn-solid:hover{
+  opacity:.94;
+}
+
+
+/* =========================================================
+   TABLE CARD
+   ========================================================= */
+
+.card{
+  background:var(--card);
+
+  border:1px solid var(--line);
+  border-radius:18px;
+
+  overflow:hidden;
+
+  box-shadow:
+    0 1px 2px rgba(14,43,44,.04),
+    0 12px 28px rgba(14,43,44,.05);
+}
+
+
+/* =========================================================
+   HORIZONTAL SCROLL
+   ========================================================= */
+
+.table-scroll{
+  width:100%;
+
+  overflow-x:auto;
+  overflow-y:hidden;
+
+  -webkit-overflow-scrolling:touch;
+
+  scrollbar-width:auto;
+}
+
+.table-scroll::-webkit-scrollbar{
+  height:10px;
+}
+
+.table-scroll::-webkit-scrollbar-track{
+  background:#eef4f3;
+  border-radius:999px;
+}
+
+.table-scroll::-webkit-scrollbar-thumb{
+  background:#9bb7c7;
+  border-radius:999px;
+}
+
+.table-scroll::-webkit-scrollbar-thumb:hover{
+  background:#6f95aa;
+}
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+/*
+   IMPORTANT:
+   The table is deliberately compact.
+
+   Total width is much smaller than before,
+   while Assigned To / Assigned By remain wider.
+*/
+
+.table-scroll table{
+  width:100%;
+
+  /*
+     Allows the browser to respect the individual
+     column widths below.
+  */
+  table-layout:fixed;
+
+  /*
+     Smaller overall minimum width.
+     Horizontal scrolling is still available.
+  */
+  min-width:1080px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+}
+
+
+/* =========================================================
+   COLUMN WIDTHS
+
+   Column order:
+   1 = checkbox
+   2 = ID
+   3 = Login email
+   4 = Password
+   5 = Status
+   6 = Assigned to
+   7 = Assigned by
+   8 = Assigned on
+   9 = Company
+   10 = Phone
+   11 = Actions
+   ========================================================= */
+
+
+/* Checkbox */
+thead th:nth-child(1),
+tbody td:nth-child(1){
+  width:38px;
+  min-width:38px;
+  max-width:38px;
+  text-align:center;
+}
+
+
+/* ID */
+thead th:nth-child(2),
+tbody td:nth-child(2){
+  width:58px;
+  min-width:58px;
+  max-width:58px;
+}
+
+
+/* Login email */
+thead th:nth-child(3),
+tbody td:nth-child(3){
+  width:135px;
+  min-width:135px;
+}
+
+
+/* Password */
+thead th:nth-child(4),
+tbody td:nth-child(4){
+  width:90px;
+  min-width:90px;
+}
+
+
+/* Status */
+thead th:nth-child(5),
+tbody td:nth-child(5){
+  width:82px;
+  min-width:82px;
+}
+
+
+/* =========================================================
+   ASSIGNED TO
+   Keep this wider because it contains:
+   - Visitor name
+   - Visitor email
+   ========================================================= */
+
+thead th:nth-child(6),
+tbody td:nth-child(6){
+  width:175px;
+  min-width:175px;
+}
+
+
+/* =========================================================
+   ASSIGNED BY
+   Keep this wider because it contains:
+   - Admin name
+   - Email
+   - Department
+   ========================================================= */
+
+thead th:nth-child(7),
+tbody td:nth-child(7){
+  width:170px;
+  min-width:170px;
+}
+
+
+/* Assigned on */
+thead th:nth-child(8),
+tbody td:nth-child(8){
+  width:92px;
+  min-width:92px;
+}
+
+
+/* Company */
+thead th:nth-child(9),
+tbody td:nth-child(9){
+  width:120px;
+  min-width:120px;
+}
+
+
+/* Phone */
+thead th:nth-child(10),
+tbody td:nth-child(10){
+  width:105px;
+  min-width:105px;
+}
+
+
+/* Actions */
+thead th:nth-child(11),
+tbody td:nth-child(11){
+  width:72px;
+  min-width:72px;
+  max-width:72px;
+}
+
+
+/* =========================================================
+   TABLE HEADER
+   ========================================================= */
+
+thead th{
+  text-align:left;
+
+  padding:11px 9px;
+
+  font-size:10.5px;
+
+  color:#dbe6ff;
+
+  text-transform:uppercase;
+  letter-spacing:.035em;
+
+  font-weight:700;
+
+  /*
+     Allow long headers to wrap.
+     This prevents huge columns.
+  */
+  white-space:normal;
+
+  line-height:1.15;
+
+  vertical-align:middle;
+
+  background:
+    linear-gradient(
+      90deg,
+      #0f2a66,
+      #1e4fb0
+    );
+}
+
+thead th.chk{
+  width:38px;
+}
+
+
+/* =========================================================
+   TABLE CELLS
+   ========================================================= */
+
+tbody td{
+  padding:10px 9px;
+
+  border-bottom:1px solid var(--line);
+
+  vertical-align:middle;
+
+  /*
+     IMPORTANT:
+     Long content is allowed to wrap.
+  */
+  white-space:normal;
+
+  word-break:break-word;
+
+  overflow-wrap:anywhere;
+
+  line-height:1.25;
+}
+
+tbody tr:last-child td{
+  border-bottom:none;
+}
+
+tbody tr:nth-child(even){
+  background:#f4f8ff;
+}
+
+tbody tr:hover{
+  background:#e7eefc;
+}
+
+tbody tr.row-inuse td:first-child{
+  box-shadow:
+    inset 3px 0 0 var(--amber);
+}
+
+tbody tr.row-available td:first-child{
+  box-shadow:
+    inset 3px 0 0 var(--accent-2);
+}
+
+
+/* =========================================================
+   CHECKBOX
+   ========================================================= */
+
+input[type=checkbox]{
+  width:16px;
+  height:16px;
+
+  accent-color:var(--accent);
+
+  cursor:pointer;
+}
+
+
+/* =========================================================
+   PEOPLE
+   ========================================================= */
+
+.person{
+  display:flex;
+  align-items:center;
+  gap:8px;
+
+  /*
+     Prevent avatar from shrinking.
+  */
+  min-width:0;
+}
+
+.avatar{
+  width:30px;
+  height:30px;
+
+  border-radius:50%;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  color:#fff;
+
+  font-size:12px;
+  font-weight:700;
+
+  flex-shrink:0;
+}
+
+.avatar.unassigned{
+  background:var(--gray-soft);
+  color:var(--ink-soft);
+}
+
+.name{
+  font-weight:700;
+  color:var(--slate);
+
+  /*
+     Allow long names to wrap.
+  */
+  overflow-wrap:anywhere;
+}
+
+.sub{
+  font-size:11px;
+  color:var(--ink-soft);
+
+  /*
+     Emails and departments can wrap.
+  */
+  overflow-wrap:anywhere;
+  word-break:break-word;
+
+  line-height:1.25;
+}
+
+
+/* =========================================================
+   PASSWORD / ID
+   ========================================================= */
+
+.mono{
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+
+  font-size:12px;
+
+  overflow-wrap:anywhere;
+}
+
+.id-pill{
+  background:var(--green-soft);
+  color:var(--accent);
+
+  padding:3px 7px;
+
+  border-radius:7px;
+
+  font-size:11px;
+  font-weight:700;
+
+  border:1px solid #c8e6e1;
+}
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.pill{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+
+  padding:4px 8px;
+
+  border-radius:999px;
+
+  font-size:10.5px;
+  font-weight:700;
+
+  border:1px solid transparent;
+
+  /*
+     Prevent status from becoming too wide.
+  */
+  white-space:nowrap;
+}
+
+.pill::before{
+  content:"";
+
+  width:5px;
+  height:5px;
+
+  border-radius:50%;
+
+  background:currentColor;
+}
+
+.pill.available{
+  background:var(--green-soft);
+  color:var(--accent);
+  border-color:#bfe4dd;
+}
+
+.pill.inuse{
+  background:var(--amber-soft);
+  color:var(--amber);
+  border-color:#eed7ab;
+}
+
+
+/* =========================================================
+   DAYS
+   ========================================================= */
+
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.actions{
+  display:flex;
+  gap:8px;
+
+  justify-content:center;
+}
+
+.actions button{
+  background:none;
+  border:none;
+
+  cursor:pointer;
+
+  color:var(--ink-soft);
+
+  padding:2px;
+}
+
+.actions button:hover{
+  color:var(--accent);
+}
+
+.actions button.danger:hover{
+  color:var(--red);
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.empty{
+  padding:44px;
+
+  text-align:center;
+
+  color:var(--ink-soft);
+
+  font-size:13.5px;
+}
+
+
+/* =========================================================
+   PAGINATION
+   ========================================================= */
+
+.pagination{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding:12px 16px;
+
+  font-size:13px;
+  color:var(--ink-soft);
+
+  border-top:1px solid var(--line);
+
+  background:#f4f8ff;
+}
+
+.page-btns{
+  display:flex;
+  align-items:center;
+  gap:4px;
+}
+
+.page-btns button{
+  width:26px;
+  height:26px;
+
+  border-radius:8px;
+
+  border:1px solid var(--line);
+
+  background:var(--card);
+
+  cursor:pointer;
+
+  font-size:12.5px;
+
+  color:var(--ink);
+}
+
+.page-btns button.active{
+  background:#1e4fb0;
+  border-color:#1e4fb0;
+  color:#fff;
+}
+
+.page-btns button:disabled{
+  opacity:.4;
+  cursor:default;
+}
+
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+.overlay{
+  position:fixed;
+  inset:0;
+
+  background:rgba(10,30,31,.5);
+
+  display:none;
+
+  align-items:center;
+  justify-content:center;
+
+  padding:20px;
+
+  z-index:50;
+
+  backdrop-filter:blur(2px);
+}
+
+.overlay.open{
+  display:flex;
+}
+
+.modal{
+  background:var(--card);
+
+  border-radius:18px;
+
+  width:100%;
+  max-width:460px;
+
+  padding:26px;
+
+  box-shadow:
+    0 30px 70px rgba(10,30,31,.28);
+}
+
+.modal h2{
+  margin:0 0 4px;
+
+  font-size:17px;
+  font-weight:800;
+}
+
+.modal .hint{
+  color:var(--ink-soft);
+
+  font-size:12.5px;
+
+  margin-bottom:18px;
+}
+
+.field{
+  margin-bottom:13px;
+}
+
+.field label{
+  display:block;
+
+  font-size:11.5px;
+  font-weight:700;
+
+  color:var(--ink-soft);
+
+  margin-bottom:5px;
+
+  text-transform:uppercase;
+
+  letter-spacing:.04em;
+}
+
+.field input,
+.field select{
+  width:100%;
+
+  padding:9px 11px;
+
+  border:1px solid var(--line);
+
+  border-radius:9px;
+
+  font-size:14px;
+
+  outline:none;
+
+  font-family:inherit;
+}
+
+.field input:focus,
+.field select:focus{
+  border-color:var(--accent);
+
+  box-shadow:
+    0 0 0 3px rgba(31,122,114,.14);
+}
+
+.field input:disabled{
+  background:var(--gray-soft);
+  color:#9aa0a8;
+}
+
+.row2{
+  display:grid;
+
+  grid-template-columns:1fr 1fr;
+
+  gap:10px;
+}
+
+.modal-actions{
+  display:flex;
+
+  gap:8px;
+
+  margin-top:18px;
+}
+
+.mbtn{
+  flex:1;
+
+  padding:10px;
+
+  border-radius:10px;
+
+  border:1px solid var(--line);
+
+  background:var(--card);
+
+  font-weight:700;
+
+  font-size:13.5px;
+
+  cursor:pointer;
+}
+
+.mbtn.primary{
+  background:
+    linear-gradient(
+      135deg,
+      var(--accent),
+      var(--accent-2)
+    );
+
+  border-color:transparent;
+
+  color:#fff;
+}
+
+
+/* =========================================================
+   FOOTNOTE
+   ========================================================= */
+
+.footnote{
+  margin-top:14px;
+
+  font-size:12px;
+
+  color:var(--ink-soft);
+
+  text-align:center;
+}
+
+.footnote code{
+  background:var(--gray-soft);
+
+  padding:1px 5px;
+
+  border-radius:6px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media(max-width:900px){
+
+  body{
+    padding:18px;
+  }
+
+  .stats{
+    grid-template-columns:1fr;
+  }
+
+  .toolbar{
+    align-items:stretch;
+  }
+
+  .search{
+    max-width:none;
+  }
+
+  .spacer{
+    display:none;
+  }
+
+}
+
+
+@media(max-width:600px){
+
+  body{
+    padding:10px;
+  }
+
+  .heading h1{
+    font-size:22px;
+  }
+
+  .heading p{
+    font-size:12px;
+  }
+
+  .row2{
+    grid-template-columns:1fr;
+  }
+
+  .modal{
+    padding:20px;
+  }
+
+}
+
+
+
+/* =========================================================
+   MOBILE-FIRST TABLE OVERRIDE
+   ---------------------------------------------------------
+   Desktop: keeps the normal compact table.
+   Phone: changes each account row into a readable card.
+   This prevents the very narrow Clappia iframe from making
+   the table unreadable while keeping ALL fields available.
+   ========================================================= */
+
+@media (max-width: 700px){
+
+  body{
+    padding:8px;
+    overflow-x:hidden;
+  }
+
+  .wrap{
+    width:100%;
+    max-width:none;
+  }
+
+  .heading{
+    margin-bottom:12px;
+    gap:8px;
+  }
+
+  .heading h1{
+    font-size:21px;
+    line-height:1.15;
+    padding-left:10px;
+    border-left-width:4px;
+  }
+
+  .heading p{
+    margin:5px 0 0 10px;
+    font-size:12px;
+    line-height:1.4;
+  }
+
+  /* Keep the three statistics compact on phones. */
+  .stats{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:7px;
+    margin-bottom:12px;
+  }
+
+  .stat{
+    min-width:0;
+    padding:10px 8px;
+    border-radius:12px;
+    gap:7px;
+  }
+
+  .stat .ic{
+    width:29px;
+    height:29px;
+    border-radius:8px;
+  }
+
+  .stat .ic svg{
+    width:15px;
+    height:15px;
+  }
+
+  .stat .n{
+    font-size:17px;
+  }
+
+  .stat .l{
+    font-size:9px;
+    line-height:1.1;
+  }
+
+  /* Toolbar becomes a clean vertical stack. */
+  .toolbar{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px;
+    margin-bottom:10px;
+  }
+
+  .search{
+    grid-column:1 / -1;
+    width:100%;
+    min-width:0;
+    max-width:none;
+  }
+
+  .search input{
+    padding:9px 12px 9px 34px;
+    font-size:13px;
+  }
+
+  .dd,
+  .btn-outline,
+  .btn-solid{
+    width:100%;
+    min-width:0;
+    justify-content:center;
+    padding:8px 10px;
+    font-size:12px;
+  }
+
+  .spacer{
+    display:none;
+  }
+
+  /* =======================================================
+     PHONE TABLE -> CARDS
+     ======================================================= */
+
+  .card{
+    border-radius:14px;
+    overflow:hidden;
+  }
+
+  .table-scroll{
+    overflow:visible;
+    width:100%;
+  }
+
+  .table-scroll table,
+  .table-scroll tbody,
+  .table-scroll tr,
+  .table-scroll td{
+    display:block;
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+  }
+
+  .table-scroll table{
+    min-width:0 !important;
+    table-layout:auto;
+  }
+
+  .table-scroll thead{
+    display:none;
+  }
+
+  .table-scroll tbody{
+    padding:8px;
+  }
+
+  .table-scroll tbody tr{
+    position:relative;
+    margin:0 0 10px;
+    padding:8px 10px 7px;
+    border:1px solid var(--line);
+    border-radius:13px;
+    background:#fff !important;
+    box-shadow:0 3px 10px rgba(14,43,44,.07);
+  }
+
+  .table-scroll tbody tr:last-child{
+    margin-bottom:0;
+  }
+
+  .table-scroll tbody tr.row-inuse{
+    border-left:4px solid var(--amber);
+  }
+
+  .table-scroll tbody tr.row-available{
+    border-left:4px solid var(--accent-2);
+  }
+
+  /*
+     MOBILE CARD LAYOUT
+     ------------------
+     Every row uses the same two-column structure:
+
+       LABEL  |  VALUE
+
+     The label column is fixed, so every value starts at
+     exactly the same horizontal position. This prevents
+     emails, departments and long values from appearing
+     underneath the labels.
+  */
+  .table-scroll tbody td{
+    display:grid;
+    grid-template-columns:88px minmax(0,1fr);
+    column-gap:12px;
+    align-items:start;
+    width:100% !important;
+    box-sizing:border-box;
+    padding:7px 2px;
+    border-bottom:1px solid #edf2f1;
+    font-size:12px;
+    line-height:1.35;
+    overflow-wrap:anywhere;
+    word-break:break-word;
+  }
+
+  .table-scroll tbody td:last-child{
+    border-bottom:none;
+  }
+
+  /* Keep the label column rigid and aligned. */
+  .table-scroll tbody td::before{
+    grid-column:1;
+    width:88px;
+    min-width:88px;
+    color:var(--ink-soft);
+    font-size:9.5px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.035em;
+    line-height:1.35;
+    white-space:normal;
+    overflow-wrap:normal;
+    word-break:normal;
+  }
+
+  /* Every actual value occupies ONLY the right column. */
+  .table-scroll tbody td > *{
+    grid-column:2;
+    min-width:0;
+    max-width:100%;
+  }
+
+  /* Direct text nodes are grid items automatically. */
+  .table-scroll tbody td{
+    justify-items:stretch;
+  }
+
+  /* Make the people/value blocks stay entirely on the right. */
+  .table-scroll tbody td:nth-child(6) .person,
+  .table-scroll tbody td:nth-child(7) > div{
+    width:100%;
+    min-width:0;
+    max-width:100%;
+  }
+
+  /* Long emails, departments and phone numbers wrap inside
+     the value column instead of crossing into the label area. */
+  .table-scroll tbody td .name,
+  .table-scroll tbody td .sub,
+  .table-scroll tbody td .mono,
+  .table-scroll tbody td:nth-child(3),
+  .table-scroll tbody td:nth-child(8),
+  .table-scroll tbody td:nth-child(9),
+  .table-scroll tbody td:nth-child(10){
+    overflow-wrap:anywhere;
+    word-break:break-word;
+  }
+
+  .table-scroll tbody td:nth-child(1)::before{content:"Select";}
+  .table-scroll tbody td:nth-child(2)::before{content:"ID";}
+  .table-scroll tbody td:nth-child(3)::before{content:"Login email";}
+  .table-scroll tbody td:nth-child(4)::before{content:"Password";}
+  .table-scroll tbody td:nth-child(5)::before{content:"Status";}
+  .table-scroll tbody td:nth-child(6)::before{content:"Assigned to";}
+  .table-scroll tbody td:nth-child(7)::before{content:"Assigned by";}
+  .table-scroll tbody td:nth-child(8)::before{content:"Assigned on";}
+  .table-scroll tbody td:nth-child(9)::before{content:"Company";}
+  .table-scroll tbody td:nth-child(10)::before{content:"Phone";}
+  .table-scroll tbody td:nth-child(11)::before{content:"Actions";}
+
+  /* Checkbox row */
+  .table-scroll tbody td:nth-child(1){
+    display:grid;
+    grid-template-columns:88px minmax(0,1fr);
+    column-gap:12px;
+    align-items:center;
+    min-height:30px;
+  }
+
+  .table-scroll tbody td:nth-child(1)::before{
+    grid-column:1;
+    width:88px;
+  }
+
+  .table-scroll tbody td:nth-child(1) input{
+    grid-column:2;
+    justify-self:end;
+  }
+
+  /* Keep status pill and ID compact. */
+  .table-scroll tbody td:nth-child(2),
+  .table-scroll tbody td:nth-child(5),
+  .table-scroll tbody td:nth-child(8),
+  .table-scroll tbody td:nth-child(9){
+    align-items:center;
+  }
+
+  .table-scroll tbody td:nth-child(2) .id-pill{
+    justify-self:start;
+  }
+
+  .table-scroll tbody td:nth-child(5) .pill{
+    justify-self:start;
+  }
+
+  .table-scroll tbody td:nth-child(8),
+  .table-scroll tbody td:nth-child(9),
+  .table-scroll tbody td:nth-child(10){
+    text-align:left;
+  }
+
+  /* People blocks use the full value area. */
+  .table-scroll tbody td:nth-child(6) .person{
+    min-width:0;
+    width:100%;
+  }
+
+  .table-scroll tbody td:nth-child(6) .name,
+  .table-scroll tbody td:nth-child(6) .sub,
+  .table-scroll tbody td:nth-child(7) .name,
+  .table-scroll tbody td:nth-child(7) .sub{
+    max-width:100%;
+  }
+
+  .table-scroll tbody td:nth-child(7) > *{
+    min-width:0;
+  }
+
+  .table-scroll tbody td:nth-child(11) .actions{
+    justify-content:flex-start;
+  }
+
+  .table-scroll tbody td:nth-child(11) .actions button{
+    padding:5px;
+  }
+
+  /* Pagination stacks cleanly on narrow screens. */
+  .pagination{
+    gap:8px;
+    padding:10px 12px;
+    font-size:11.5px;
+  }
+
+  .page-btns button{
+    width:28px;
+    height:28px;
+  }
+
+  .empty{
+    padding:28px 14px;
+  }
+
+  .footnote{
+    font-size:10.5px;
+    line-height:1.45;
+    padding:0 4px;
+  }
+
+  /* Modal fills almost the whole phone without overflowing. */
+  .overlay{
+    padding:10px;
+    align-items:flex-start;
+    overflow-y:auto;
+  }
+
+  .modal{
+    width:100%;
+    max-width:none;
+    margin:10px 0;
+    padding:18px;
+    border-radius:14px;
+  }
+
+  .row2{
+    grid-template-columns:1fr;
+    gap:0;
+  }
+
+  .modal-actions{
+    position:sticky;
+    bottom:0;
+    background:var(--card);
+    padding-top:10px;
+  }
+}
+
+@container dashboard (max-width: 700px){
+
+  body{
+    padding:8px;
+    overflow-x:hidden;
+  }
+
+  .wrap{
+    width:100%;
+    max-width:none;
+  }
+
+  .heading{
+    margin-bottom:12px;
+    gap:8px;
+  }
+
+  .heading h1{
+    font-size:21px;
+    line-height:1.15;
+    padding-left:10px;
+    border-left-width:4px;
+  }
+
+  .heading p{
+    margin:5px 0 0 10px;
+    font-size:12px;
+    line-height:1.4;
+  }
+
+  /* Keep the three statistics compact on phones. */
+  .stats{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:7px;
+    margin-bottom:12px;
+  }
+
+  .stat{
+    min-width:0;
+    padding:10px 8px;
+    border-radius:12px;
+    gap:7px;
+  }
+
+  .stat .ic{
+    width:29px;
+    height:29px;
+    border-radius:8px;
+  }
+
+  .stat .ic svg{
+    width:15px;
+    height:15px;
+  }
+
+  .stat .n{
+    font-size:17px;
+  }
+
+  .stat .l{
+    font-size:9px;
+    line-height:1.1;
+  }
+
+  /* Toolbar becomes a clean vertical stack. */
+  .toolbar{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px;
+    margin-bottom:10px;
+  }
+
+  .search{
+    grid-column:1 / -1;
+    width:100%;
+    min-width:0;
+    max-width:none;
+  }
+
+  .search input{
+    padding:9px 12px 9px 34px;
+    font-size:13px;
+  }
+
+  .dd,
+  .btn-outline,
+  .btn-solid{
+    width:100%;
+    min-width:0;
+    justify-content:center;
+    padding:8px 10px;
+    font-size:12px;
+  }
+
+  .spacer{
+    display:none;
+  }
+
+  /* =======================================================
+     PHONE TABLE -> CARDS
+     ======================================================= */
+
+  .card{
+    border-radius:14px;
+    overflow:hidden;
+  }
+
+  .table-scroll{
+    overflow:visible;
+    width:100%;
+  }
+
+  .table-scroll table,
+  .table-scroll tbody,
+  .table-scroll tr,
+  .table-scroll td{
+    display:block;
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+  }
+
+  .table-scroll table{
+    min-width:0 !important;
+    table-layout:auto;
+  }
+
+  .table-scroll thead{
+    display:none;
+  }
+
+  .table-scroll tbody{
+    padding:8px;
+  }
+
+  .table-scroll tbody tr{
+    position:relative;
+    margin:0 0 10px;
+    padding:8px 10px 7px;
+    border:1px solid var(--line);
+    border-radius:13px;
+    background:#fff !important;
+    box-shadow:0 3px 10px rgba(14,43,44,.07);
+  }
+
+  .table-scroll tbody tr:last-child{
+    margin-bottom:0;
+  }
+
+  .table-scroll tbody tr.row-inuse{
+    border-left:4px solid var(--amber);
+  }
+
+  .table-scroll tbody tr.row-available{
+    border-left:4px solid var(--accent-2);
+  }
+
+  /*
+     MOBILE CARD LAYOUT
+     ------------------
+     Every row uses the same two-column structure:
+
+       LABEL  |  VALUE
+
+     The label column is fixed, so every value starts at
+     exactly the same horizontal position. This prevents
+     emails, departments and long values from appearing
+     underneath the labels.
+  */
+  .table-scroll tbody td{
+    display:grid;
+    grid-template-columns:88px minmax(0,1fr);
+    column-gap:12px;
+    align-items:start;
+    width:100% !important;
+    box-sizing:border-box;
+    padding:7px 2px;
+    border-bottom:1px solid #edf2f1;
+    font-size:12px;
+    line-height:1.35;
+    overflow-wrap:anywhere;
+    word-break:break-word;
+  }
+
+  .table-scroll tbody td:last-child{
+    border-bottom:none;
+  }
+
+  /* Keep the label column rigid and aligned. */
+  .table-scroll tbody td::before{
+    grid-column:1;
+    width:88px;
+    min-width:88px;
+    color:var(--ink-soft);
+    font-size:9.5px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.035em;
+    line-height:1.35;
+    white-space:normal;
+    overflow-wrap:normal;
+    word-break:normal;
+  }
+
+  /* Every actual value occupies ONLY the right column. */
+  .table-scroll tbody td > *{
+    grid-column:2;
+    min-width:0;
+    max-width:100%;
+  }
+
+  /* Direct text nodes are grid items automatically. */
+  .table-scroll tbody td{
+    justify-items:stretch;
+  }
+
+  /* Make the people/value blocks stay entirely on the right. */
+  .table-scroll tbody td:nth-child(6) .person,
+  .table-scroll tbody td:nth-child(7) > div{
+    width:100%;
+    min-width:0;
+    max-width:100%;
+  }
+
+  /* Long emails, departments and phone numbers wrap inside
+     the value column instead of crossing into the label area. */
+  .table-scroll tbody td .name,
+  .table-scroll tbody td .sub,
+  .table-scroll tbody td .mono,
+  .table-scroll tbody td:nth-child(3),
+  .table-scroll tbody td:nth-child(8),
+  .table-scroll tbody td:nth-child(9),
+  .table-scroll tbody td:nth-child(10){
+    overflow-wrap:anywhere;
+    word-break:break-word;
+  }
+
+  .table-scroll tbody td:nth-child(1)::before{content:"Select";}
+  .table-scroll tbody td:nth-child(2)::before{content:"ID";}
+  .table-scroll tbody td:nth-child(3)::before{content:"Login email";}
+  .table-scroll tbody td:nth-child(4)::before{content:"Password";}
+  .table-scroll tbody td:nth-child(5)::before{content:"Status";}
+  .table-scroll tbody td:nth-child(6)::before{content:"Assigned to";}
+  .table-scroll tbody td:nth-child(7)::before{content:"Assigned by";}
+  .table-scroll tbody td:nth-child(8)::before{content:"Assigned on";}
+  .table-scroll tbody td:nth-child(9)::before{content:"Company";}
+  .table-scroll tbody td:nth-child(10)::before{content:"Phone";}
+  .table-scroll tbody td:nth-child(11)::before{content:"Actions";}
+
+  /* Checkbox row */
+  .table-scroll tbody td:nth-child(1){
+    display:grid;
+    grid-template-columns:88px minmax(0,1fr);
+    column-gap:12px;
+    align-items:center;
+    min-height:30px;
+  }
+
+  .table-scroll tbody td:nth-child(1)::before{
+    grid-column:1;
+    width:88px;
+  }
+
+  .table-scroll tbody td:nth-child(1) input{
+    grid-column:2;
+    justify-self:end;
+  }
+
+  /* Keep status pill and ID compact. */
+  .table-scroll tbody td:nth-child(2),
+  .table-scroll tbody td:nth-child(5),
+  .table-scroll tbody td:nth-child(8),
+  .table-scroll tbody td:nth-child(9){
+    align-items:center;
+  }
+
+  .table-scroll tbody td:nth-child(2) .id-pill{
+    justify-self:start;
+  }
+
+  .table-scroll tbody td:nth-child(5) .pill{
+    justify-self:start;
+  }
+
+  .table-scroll tbody td:nth-child(8),
+  .table-scroll tbody td:nth-child(9),
+  .table-scroll tbody td:nth-child(10){
+    text-align:left;
+  }
+
+  /* People blocks use the full value area. */
+  .table-scroll tbody td:nth-child(6) .person{
+    min-width:0;
+    width:100%;
+  }
+
+  .table-scroll tbody td:nth-child(6) .name,
+  .table-scroll tbody td:nth-child(6) .sub,
+  .table-scroll tbody td:nth-child(7) .name,
+  .table-scroll tbody td:nth-child(7) .sub{
+    max-width:100%;
+  }
+
+  .table-scroll tbody td:nth-child(7) > *{
+    min-width:0;
+  }
+
+  .table-scroll tbody td:nth-child(11) .actions{
+    justify-content:flex-start;
+  }
+
+  .table-scroll tbody td:nth-child(11) .actions button{
+    padding:5px;
+  }
+
+  /* Pagination stacks cleanly on narrow screens. */
+  .pagination{
+    gap:8px;
+    padding:10px 12px;
+    font-size:11.5px;
+  }
+
+  .page-btns button{
+    width:28px;
+    height:28px;
+  }
+
+  .empty{
+    padding:28px 14px;
+  }
+
+  .footnote{
+    font-size:10.5px;
+    line-height:1.45;
+    padding:0 4px;
+  }
+
+  /* Modal fills almost the whole phone without overflowing. */
+  .overlay{
+    padding:10px;
+    align-items:flex-start;
+    overflow-y:auto;
+  }
+
+  .modal{
+    width:100%;
+    max-width:none;
+    margin:10px 0;
+    padding:18px;
+    border-radius:14px;
+  }
+
+  .row2{
+    grid-template-columns:1fr;
+    gap:0;
+  }
+
+  .modal-actions{
+    position:sticky;
+    bottom:0;
+    background:var(--card);
+    padding-top:10px;
+  }
+}
+
+/* Extra-small phones */
+@media (max-width:380px){
+
+  body{
+    padding:6px;
+  }
+
+  .stats{
+    gap:5px;
+  }
+
+  .stat{
+    padding:9px 5px;
+  }
+
+  .stat .ic{
+    width:25px;
+    height:25px;
+  }
+
+  .stat .n{
+    font-size:15px;
+  }
+
+  .stat .l{
+    font-size:8px;
+  }
+
+  .toolbar{
+    grid-template-columns:1fr;
+  }
+
+  .search{
+    grid-column:auto;
+  }
+
+  .table-scroll tbody td{
+    grid-template-columns:92px minmax(0,1fr);
+    gap:6px;
+    font-size:11.5px;
+  }
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="wrap">
+
+
+<!-- =====================================================
+     HEADER
+     ===================================================== -->
+
+<div class="heading">
+
+  <div>
+
+    <h1>
+      Visitor Account Dashboard
+    </h1>
+
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     TOOLBAR
+     ===================================================== -->
+
+<div class="toolbar">
+
+
+  <div class="search">
+
+    <svg
+      width="15"
+      height="15"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <circle
+        cx="11"
+        cy="11"
+        r="7"
+      />
+
+      <line
+        x1="21"
+        y1="21"
+        x2="16.65"
+        y2="16.65"
+      />
+    </svg>
+
+    <input
+      id="searchInput"
+      placeholder="Search"
+    >
+
+  </div>
+
+
+  <div
+    class="dd"
+    id="statusDd"
+  >
+
+    <span>
+      Status
+    </span>
+
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <polyline points="6 9 12 15 18 9"/>
+    </svg>
+
+
+    <div
+      class="dd-menu"
+      id="statusMenu"
+    >
+
+      <button
+        data-v="all"
+        class="sel"
+      >
+        All
+      </button>
+
+      <button data-v="Available">
+        Available
+      </button>
+
+      <button data-v="In Use">
+        In Use
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div class="spacer"></div>
+
+
+  <button
+    class="btn-outline"
+    id="exportBtn"
+  >
+
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+
+      <polyline points="7 10 12 15 17 10"/>
+
+      <line
+        x1="12"
+        y1="15"
+        x2="12"
+        y2="3"
+      />
+
+    </svg>
+
+    Export
+
+  </button>
+
+
+  <button
+    class="btn-solid"
+    id="addBtn"
+  >
+    + Add account
+  </button>
+
+</div>
+
+
+<!-- =====================================================
+     TABLE
+     ===================================================== -->
+
+<div class="card">
+
+  <div class="table-scroll">
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th class="chk">
+
+            <input
+              type="checkbox"
+              id="checkAll"
+            >
+
+          </th>
+
+          <th>
+            ID
+          </th>
+
+          <th>
+            Login email
+          </th>
+
+          <th>
+            Password
+          </th>
+
+          <th>
+            Status
+          </th>
+
+          <th>
+            Assigned to
+          </th>
+
+          <th>
+            Assigned by
+          </th>
+
+          <th>
+            Assigned on
+          </th>
+
+          <th>
+            Company
+          </th>
+
+          <th>
+            Phone
+          </th>
+
+          <th>
+            Actions
+          </th>
+
+        </tr>
+
+      </thead>
+
+
+      <tbody id="tbody"></tbody>
+
+    </table>
+
+  </div>
+
+
+  <div
+    class="empty"
+    id="emptyState"
+    style="display:none;"
+  >
+    No accounts match your search.
+  </div>
+
+
+  <div class="pagination">
+
+    <div class="left">
+
+      <span id="rangeLabel">
+        1–2
+      </span>
+
+      &nbsp;of&nbsp;
+
+      <span id="totalLabel">
+        2
+      </span>
+
+      &nbsp;rows
+
+    </div>
+
+
+    <div class="page-btns">
+
+      <button disabled>
+        ‹
+      </button>
+
+      <button class="active">
+        1
+      </button>
+
+      <button disabled>
+        ›
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<p class="footnote">
+
+  Data is typed in directly and stored in this page's memory —
+  refreshing the page resets it to the sample rows below.
+  Edit the <code>records</code> array in the script to change
+  the starting data.
+
+</p>
+
+</div>
+
+
+<!-- =====================================================
+     EDIT MODAL
+     ===================================================== -->
+
+<div
+  class="overlay"
+  id="overlay"
+>
+
+  <div class="modal">
+
+    <h2 id="modalTitle">
+      Edit account
+    </h2>
+
+    <p
+      class="hint"
+      id="modalHint"
+    >
+      Update details for this shared login account.
+    </p>
+
+
+    <div class="field">
+
+      <label>
+        ID
+      </label>
+
+      <input
+        id="f_id"
+        disabled
+      >
+
+    </div>
+
+
+    <div class="row2">
+
+      <div class="field">
+
+        <label>
+          Login email
+        </label>
+
+        <input
+          id="f_email"
+        >
+
+      </div>
+
+
+      <div class="field">
+
+        <label>
+          Password
+        </label>
+
+        <input
+          id="f_password"
+        >
+
+      </div>
+
+    </div>
+
+
+    <div class="row2">
+
+      <div class="field">
+
+        <label>
+          Account status
+        </label>
+
+        <select id="f_status">
+
+          <option>
+            Available
+          </option>
+
+          <option>
+            In Use
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="field">
+
+        <label>
+          Assigned on
+        </label>
+
+        <input
+          type="date"
+          id="f_date"
+        >
+
+      </div>
+
+    </div>
+
+
+    <div class="row2">
+
+      <div class="field">
+
+        <label>
+          Assigned visitor name
+        </label>
+
+        <input
+          id="f_name"
+          placeholder="e.g. Sarah Tan"
+        >
+
+      </div>
+
+
+      <div class="field">
+
+        <label>
+          Company
+        </label>
+
+        <input
+          id="f_company"
+          placeholder="e.g. Acme Supplies"
+        >
+
+      </div>
+
+    </div>
+
+
+    <div class="row2">
+
+      <div class="field">
+
+        <label>
+          Visitor email
+        </label>
+
+        <input
+          id="f_visitorEmail"
+          placeholder="visitor's own email"
+        >
+
+      </div>
+
+
+      <div class="field">
+
+        <label>
+          Phone number
+        </label>
+
+        <input
+          id="f_phone"
+          placeholder="e.g. +62 812..."
+        >
+
+      </div>
+
+    </div>
+
+
+    <div class="field">
+
+      <label>
+        Assigned by
+      </label>
+
+      <select id="f_assignedBy">
+
+        <option value="">
+          — Select admin —
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <div class="modal-actions">
+
+      <button
+        class="mbtn"
+        id="cancelBtn"
+      >
+        Cancel
+      </button>
+
+      <button
+        class="mbtn primary"
+        id="saveBtn"
+      >
+        Save changes
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+
+/* =========================================================
+   ADMIN DIRECTORY
+   ========================================================= */
+
+let ADMIN_DIRECTORY = [
+
+  {
+    name: "cliff",
+    email: "internshipprp-lv2@sph.ac.id",
+    department: "Admission",
+    type: "Staff"
+  },
+
+  {
+    name: "ICT Admin",
+    email: "ictadmin@sph.ac.id",
+    department: "ICT",
+    type: "Staff"
+  }
+
+];
+
+
+/* =========================================================
+   SAMPLE / WORKING DATA
+   ========================================================= */
+
+function daysAgoISO(n){
+
+  const d = new Date();
+
+  d.setDate(
+    d.getDate() - n
+  );
+
+  return d
+    .toISOString()
+    .slice(0,10);
+
+}
+
+
+let records = [
+
+  {
+    id: "001",
+    email: "sstaung234@gmail.com",
+    password: "Staff2026",
+    status: "Available",
+    name: "",
+    company: "",
+    visitorEmail: "",
+    phone: "",
+    date: "",
+    assignedByName: "",
+    assignedByEmail: "",
+    assignedByDept: ""
+  },
+
+
+  {
+    id: "002",
+    email: "lv002@gmail.com",
+    password: "Staff2026",
+    status: "In Use",
+    name: "Daniel Warren",
+    company: "PT Sinar Abadi",
+    visitorEmail: "dwarren@sinarabadi.co.id",
+    phone: "+62 812-3456-7890",
+    date: daysAgoISO(6),
+    assignedByName: "ICT Admin",
+    assignedByEmail: "ictadmin@sph.ac.id",
+    assignedByDept: "ICT"
+  }
+
+];
+
+
+const AVATAR_COLORS = [
+
+  "#3d5a6c",
+  "#7fa8bf",
+  "#2fa79a",
+  "#3a8f8a",
+  "#1a3d3d",
+  "#0f2427"
+
+];
+
+
+function colorFor(str){
+
+  let h = 0;
+
+  for(const c of str){
+
+    h =
+      (
+        h * 31 +
+        c.charCodeAt(0)
+      ) >>> 0;
+
+  }
+
+  return AVATAR_COLORS[
+    h % AVATAR_COLORS.length
+  ];
+
+}
+
+
+function initials(name){
+
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0,2)
+    .map(
+      w => w[0].toUpperCase()
+    )
+    .join("");
+
+}
+
+
+function fmtDate(iso){
+
+  if(!iso){
+    return "";
+  }
+
+  const d =
+    new Date(
+      iso + "T00:00:00"
+    );
+
+  return d.toLocaleDateString(
+    undefined,
+    {
+      month:"short",
+      day:"numeric",
+      year:"numeric"
+    }
+  );
+
+}
+
+
+
+let statusFilter = "all";
+
+let searchTerm = "";
+
+
+const dashboardWrap =
+  document.querySelector(".wrap");
+
+/* =========================================================
+   CLAPPIA RESPONSIVE WIDTH DETECTION
+   ---------------------------------------------------------
+   The CSS above uses a container query. This observer only
+   records the actual rendered width on the wrapper so the
+   layout can be diagnosed reliably inside Clappia's phone
+   preview. It does NOT alter the desktop styling.
+   ========================================================= */
+function updateDashboardWidth(){
+  if(!dashboardWrap) return;
+
+  dashboardWrap.dataset.layoutWidth =
+    Math.round(
+      dashboardWrap.getBoundingClientRect().width
+    );
+}
+
+if(
+  dashboardWrap &&
+  "ResizeObserver" in window
+){
+  const dashboardObserver =
+    new ResizeObserver(
+      updateDashboardWidth
+    );
+
+  dashboardObserver.observe(
+    dashboardWrap
+  );
+}
+
+window.addEventListener(
+  "resize",
+  updateDashboardWidth
+);
+
+updateDashboardWidth();
+
+const tbody =
+  document.getElementById(
+    "tbody"
+  );
+
+const emptyState =
+  document.getElementById(
+    "emptyState"
+  );
+
+
+/* =========================================================
+   RENDER TABLE
+   ========================================================= */
+
+function render(){
+
+  const term =
+    searchTerm
+      .trim()
+      .toLowerCase();
+
+
+  const filtered =
+    records.filter(r => {
+
+      const matchesStatus =
+        statusFilter === "all" ||
+        r.status === statusFilter;
+
+
+      const haystack =
+        `${r.id}
+         ${r.email}
+         ${r.name}
+         ${r.company}
+         ${r.phone}
+         ${r.visitorEmail}
+         ${r.assignedByName}
+         ${r.assignedByEmail}
+         ${r.assignedByDept}`
+          .toLowerCase();
+
+
+      return (
+        matchesStatus &&
+        haystack.includes(term)
+      );
+
+    });
+
+
+  /* =========================================================
+     ACCOUNT ORDER
+     ---------------------------------------------------------
+     Always place every AVAILABLE account first.
+     Then place IN USE accounts.
+     Within each group, keep the account ID ascending.
+
+     Example:
+       ID 1 - Available
+       ID 4 - Available
+       ID 2 - In Use
+       ID 3 - In Use
+     ========================================================= */
+  const sortedFiltered =
+    [...filtered].sort((a, b) => {
+
+      const statusOrder = {
+        "Available": 0,
+        "In Use": 1
+      };
+
+      const aStatus =
+        statusOrder[a.status] ?? 99;
+
+      const bStatus =
+        statusOrder[b.status] ?? 99;
+
+      if(aStatus !== bStatus){
+        return aStatus - bStatus;
+      }
+
+      const aId =
+        Number.parseInt(a.id, 10);
+
+      const bId =
+        Number.parseInt(b.id, 10);
+
+      if(
+        Number.isFinite(aId) &&
+        Number.isFinite(bId)
+      ){
+        return aId - bId;
+      }
+
+      return String(a.id ?? "")
+        .localeCompare(
+          String(b.id ?? ""),
+          undefined,
+          { numeric: true }
+        );
+    });
+
+
+  tbody.innerHTML = "";
+
+
+  emptyState.style.display =
+    sortedFiltered.length
+      ? "none"
+      : "block";
+
+
+  sortedFiltered.forEach(r => {
+
+    const tr =
+      document.createElement("tr");
+
+
+    const statusClass =
+      r.status === "Available"
+        ? "available"
+        : "inuse";
+
+
+    tr.className =
+      statusClass === "available"
+        ? "row-available"
+        : "row-inuse";
+
+
+    const avatar =
+      r.name
+
+        ? `
+          <div
+            class="avatar"
+            style="background:${colorFor(r.name)}"
+          >
+            ${initials(r.name)}
+          </div>
+        `
+
+        : `
+          <div class="avatar unassigned"></div>
+        `;
+
+
+    tr.innerHTML = `
+
+      <td>
+
+        <input
+          type="checkbox"
+        >
+
+      </td>
+
+
+      <td>
+
+        <span class="id-pill mono">
+          ${r.id}
+        </span>
+
+      </td>
+
+
+      <td>
+
+        ${r.email}
+
+      </td>
+
+
+      <td>
+
+        <span class="mono">
+          ${r.password}
+        </span>
+
+      </td>
+
+
+      <td>
+
+        <span
+          class="pill ${statusClass}"
+        >
+          ${r.status}
+        </span>
+
+      </td>
+
+
+      <td>
+
+        <div class="person">
+
+          ${avatar}
+
+          <div>
+
+            <div class="name">
+              ${r.name || "Unassigned"}
+            </div>
+
+            ${
+              r.visitorEmail
+
+                ? `
+                  <div class="sub">
+                    ${r.visitorEmail}
+                  </div>
+                `
+
+                : ""
+            }
+
+          </div>
+
+        </div>
+
+      </td>
+
+
+      <td>
+
+        ${
+          r.assignedByName
+
+            ? `
+              <div class="name">
+                ${r.assignedByName}
+              </div>
+
+              <div class="sub">
+
+                ${r.assignedByEmail}
+
+                ${
+                  r.assignedByDept
+                    ? " · " +
+                      r.assignedByDept
+                    : ""
+                }
+
+              </div>
+            `
+
+            : ""
+        }
+
+      </td>
+
+
+      <td>
+
+        ${fmtDate(r.date)}
+
+      </td>
+
+
+      <td>
+
+        ${r.company || ""}
+
+      </td>
+
+
+      <td>
+
+        ${r.phone || ""}
+
+      </td>
+
+
+      <td>
+
+        <div class="actions">
+
+          <button
+            data-edit="${r.id}"
+            title="Edit"
+          >
+
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+
+              <path d="M12 20h9"/>
+
+              <path
+                d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"
+              />
+
+            </svg>
+
+          </button>
+
+
+          <button
+            class="danger"
+            data-delete="${r.id}"
+            title="Delete"
+          >
+
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+
+              <path d="M3 6h18"/>
+
+              <path
+                d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+              />
+
+              <path
+                d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"
+              />
+
+            </svg>
+
+          </button>
+
+        </div>
+
+      </td>
+
+    `;
+
+
+    tbody.appendChild(tr);
+
+  });
+
+
+  document.getElementById(
+    "rangeLabel"
+  ).textContent =
+
+    sortedFiltered.length
+
+      ? `1–${sortedFiltered.length}`
+
+      : "0";
+
+
+  document.getElementById(
+    "totalLabel"
+  ).textContent =
+    records.length;
+
+
+  
+
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+document
+  .getElementById("searchInput")
+  .addEventListener(
+    "input",
+    e => {
+
+      searchTerm =
+        e.target.value;
+
+      render();
+
+    }
+  );
+
+
+/* =========================================================
+   DROPDOWN FILTER
+   ========================================================= */
+
+function setupDropdown(
+  ddId,
+  menuId,
+  onPick
+){
+
+  const dd =
+    document.getElementById(
+      ddId
+    );
+
+  const menu =
+    document.getElementById(
+      menuId
+    );
+
+
+  dd.addEventListener(
+    "click",
+    e => {
+
+      document
+        .querySelectorAll(
+          ".dd-menu"
+        )
+        .forEach(
+          m => {
+
+            if(m !== menu){
+              m.classList.remove(
+                "open"
+              );
+            }
+
+          }
+        );
+
+
+      menu.classList.toggle(
+        "open"
+      );
+
+
+      e.stopPropagation();
+
+    }
+  );
+
+
+  menu
+    .querySelectorAll("button")
+    .forEach(btn => {
+
+      btn.addEventListener(
+        "click",
+        () => {
+
+          menu
+            .querySelectorAll(
+              "button"
+            )
+            .forEach(
+              b =>
+                b.classList.remove(
+                  "sel"
+                )
+            );
+
+
+          btn.classList.add(
+            "sel"
+          );
+
+
+          onPick(
+            btn.dataset.v
+          );
+
+
+          menu.classList.remove(
+            "open"
+          );
+
+        }
+      );
+
+    });
+
+}
+
+
+setupDropdown(
+  "statusDd",
+  "statusMenu",
+  v => {
+
+    statusFilter = v;
+
+    render();
+
+  }
+);
+
+
+document.addEventListener(
+  "click",
+  () => {
+
+    document
+      .querySelectorAll(
+        ".dd-menu"
+      )
+      .forEach(
+        m =>
+          m.classList.remove(
+            "open"
+          )
+      );
+
+  }
+);
+
+
+/* =========================================================
+   SELECT ALL
+   ========================================================= */
+
+document
+  .getElementById("checkAll")
+  .addEventListener(
+    "change",
+    e => {
+
+      tbody
+        .querySelectorAll(
+          'input[type=checkbox]'
+        )
+        .forEach(
+          cb =>
+            cb.checked =
+              e.target.checked
+        );
+
+    }
+  );
+
+
+/* =========================================================
+   EXPORT CSV
+   ========================================================= */
+
+document
+  .getElementById("exportBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      const header =
+        "ID,Login Email,Password,Status,Assigned To,Assigned By,Assigned By Email,Assigned By Department,Assigned On,Company,Phone";
+
+
+      const rows =
+        records.map(
+          r => {
+
+
+            return [
+
+              r.id,
+              r.email,
+              r.password,
+              r.status,
+              r.name,
+              r.assignedByName,
+              r.assignedByEmail,
+              r.assignedByDept,
+              r.date,
+              r.company,
+              r.phone
+
+            ].join(",");
+
+          }
+        );
+
+
+      const csv =
+        [
+          header,
+          ...rows
+        ].join("\n");
+
+
+      const blob =
+        new Blob(
+          [csv],
+          {
+            type:"text/csv"
+          }
+        );
+
+
+      const a =
+        document.createElement(
+          "a"
+        );
+
+
+      a.href =
+        URL.createObjectURL(
+          blob
+        );
+
+
+      a.download =
+        "email-pool.csv";
+
+
+      a.click();
+
+    }
+  );
+
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+const overlay =
+  document.getElementById(
+    "overlay"
+  );
+
+
+const assignedByEl =
+  document.getElementById(
+    "f_assignedBy"
+  );
+
+
+let editingId = null;
+
+
+/* =========================================================
+   ADMIN DROPDOWN
+   ========================================================= */
+
+function populateAdminDropdown(
+  list
+){
+
+  assignedByEl.innerHTML =
+
+    '<option value="">Select admin</option>' +
+
+    list
+      .map(
+        a => `
+
+          <option
+            value="${a.name}"
+            data-email="${a.email}"
+            data-dept="${a.department}"
+          >
+
+            ${a.name}
+            ${a.department}
+
+          </option>
+
+        `
+      )
+      .join("");
+
+}
+
+
+/* =========================================================
+   OPEN MODAL
+   ========================================================= */
+
+function openModal(record){
+
+  editingId =
+    record
+      ? record.id
+      : null;
+
+
+  document.getElementById(
+    "modalTitle"
+  ).textContent =
+
+    record
+      ? "Edit account"
+      : "New account";
+
+
+  document.getElementById(
+    "modalHint"
+  ).textContent =
+
+    record
+
+      ? "Update details for this shared login account."
+
+      : "Add a new pre-registered login to the pool.";
+
+
+  document.getElementById(
+    "f_id"
+  ).value =
+
+    record
+      ? record.id
+      : String(
+          records.length + 1
+        ).padStart(
+          3,
+          "0"
+        );
+
+
+  document.getElementById(
+    "f_email"
+  ).value =
+    record
+      ? record.email
+      : "";
+
+
+  document.getElementById(
+    "f_password"
+  ).value =
+    record
+      ? record.password
+      : "";
+
+
+  document.getElementById(
+    "f_status"
+  ).value =
+    record
+      ? record.status
+      : "Available";
+
+
+  document.getElementById(
+    "f_name"
+  ).value =
+    record
+      ? record.name
+      : "";
+
+
+  document.getElementById(
+    "f_company"
+  ).value =
+    record
+      ? record.company
+      : "";
+
+
+  document.getElementById(
+    "f_visitorEmail"
+  ).value =
+    record
+      ? record.visitorEmail
+      : "";
+
+
+  document.getElementById(
+    "f_phone"
+  ).value =
+    record
+      ? record.phone
+      : "";
+
+
+  document.getElementById(
+    "f_date"
+  ).value =
+    record
+      ? record.date
+      : "";
+
+
+  assignedByEl.value =
+    record
+      ? (
+          record.assignedByName ||
+          ""
+        )
+      : "";
+
+
+  overlay.classList.add(
+    "open"
+  );
+
+}
+
+
+/* =========================================================
+   CLOSE MODAL
+   ========================================================= */
+
+function closeModal(){
+
+  overlay.classList.remove(
+    "open"
+  );
+
+}
+
+
+document
+  .getElementById("addBtn")
+  .addEventListener(
+    "click",
+    () =>
+      openModal(null)
+  );
+
+
+document
+  .getElementById("cancelBtn")
+  .addEventListener(
+    "click",
+    closeModal
+  );
+
+
+overlay.addEventListener(
+  "click",
+  e => {
+
+    if(
+      e.target === overlay
+    ){
+
+      closeModal();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   EDIT / DELETE
+   ========================================================= */
+
+tbody.addEventListener(
+  "click",
+  e => {
+
+    const editId =
+      e.target
+        .closest(
+          "[data-edit]"
+        )
+        ?.dataset.edit;
+
+
+    const delId =
+      e.target
+        .closest(
+          "[data-delete]"
+        )
+        ?.dataset.delete;
+
+
+    if(editId){
+
+      openModal(
+        records.find(
+          r =>
+            r.id === editId
+        )
+      );
+
+    }
+
+
+    if(
+      delId &&
+      confirm(
+        `Remove account ${delId}?`
+      )
+    ){
+
+      records =
+        records.filter(
+          r =>
+            r.id !== delId
+        );
+
+
+      render();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   STATUS CHANGE
+   ========================================================= */
+
+document
+  .getElementById("f_status")
+  .addEventListener(
+    "change",
+    e => {
+
+      const dateField =
+        document.getElementById(
+          "f_date"
+        );
+
+
+      if(
+        e.target.value ===
+          "In Use" &&
+        !dateField.value
+      ){
+
+        dateField.value =
+          new Date()
+            .toISOString()
+            .slice(
+              0,
+              10
+            );
+
+      }
+
+    }
+  );
+
+
+/* =========================================================
+   SAVE ACCOUNT
+   ========================================================= */
+
+document
+  .getElementById("saveBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      const adminOpt =
+        assignedByEl
+          .selectedOptions[0];
+
+
+      const updated = {
+
+        id:
+          document
+            .getElementById(
+              "f_id"
+            )
+            .value,
+
+        email:
+          document
+            .getElementById(
+              "f_email"
+            )
+            .value,
+
+        password:
+          document
+            .getElementById(
+              "f_password"
+            )
+            .value,
+
+        status:
+          document
+            .getElementById(
+              "f_status"
+            )
+            .value,
+
+        name:
+          document
+            .getElementById(
+              "f_name"
+            )
+            .value,
+
+        company:
+          document
+            .getElementById(
+              "f_company"
+            )
+            .value,
+
+        visitorEmail:
+          document
+            .getElementById(
+              "f_visitorEmail"
+            )
+            .value,
+
+        phone:
+          document
+            .getElementById(
+              "f_phone"
+            )
+            .value,
+
+        date:
+          document
+            .getElementById(
+              "f_date"
+            )
+            .value,
+
+        assignedByName:
+          assignedByEl.value ||
+          "",
+
+        assignedByEmail:
+          assignedByEl.value
+            ? (
+                adminOpt
+                  ?.dataset
+                  .email ||
+                ""
+              )
+            : "",
+
+        assignedByDept:
+          assignedByEl.value
+            ? (
+                adminOpt
+                  ?.dataset
+                  .dept ||
+                ""
+              )
+            : ""
+
+      };
+
+
+      records =
+
+        editingId
+
+          ? records.map(
+              r =>
+                r.id === editingId
+                  ? updated
+                  : r
+            )
+
+          : [
+              ...records,
+              updated
+            ];
+
+
+      closeModal();
+
+      render();
+
+    }
+  );
+
+
+/* =========================================================
+   INITIALIZE
+   ========================================================= */
+
+(function init(){
+
+  populateAdminDropdown(
+    ADMIN_DIRECTORY
+  );
+
+  render();
+
+})();
+
+</script>
+
+</body>
+</html>
